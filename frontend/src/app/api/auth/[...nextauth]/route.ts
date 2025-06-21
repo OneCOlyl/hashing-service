@@ -1,5 +1,20 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
+import "next-auth/jwt"
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role?: string
+    } & DefaultSession["user"]
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role?: string
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,9 +24,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        const isAdmin = user.email === process.env["ADMIN_EMAIL"]
+        if (isAdmin) {
+          token.role = "admin"
+        }
+      }
+      return token
+    },
     async session({ session, token }) {
-      if (token) {
-        session.user["role"] = token["role"] as string
+      if (session.user && token.role) {
+        session.user.role = token.role
       }
       return session
     },

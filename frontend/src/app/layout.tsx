@@ -3,6 +3,7 @@ import React from 'react';
 import theme from '../theme';
 import ModeSwitch from "./components/ModeSwitch";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import Providers from './components/Providers';
 
 export default function RootLayout(props: { children: React.ReactNode })
 {
@@ -12,10 +13,11 @@ export default function RootLayout(props: { children: React.ReactNode })
     <InitColorSchemeScript attribute="class"/>
     <AppRouterCacheProvider options={{enableCssLayer: true}}>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline/>
-        <ModeSwitch/>
-        {props.children}
+        <Providers>
+          <ModeSwitch/>
+          {props.children}
+        </Providers>
       </ThemeProvider>
     </AppRouterCacheProvider>
     </body>

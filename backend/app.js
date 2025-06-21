@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
+const {initializeDatabase, getLogsByUserId} = require('./database');
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -25,7 +26,6 @@ const requireAdmin = (req, res, next) => {
   next()
 }
 
-
 app.get('/', (req, res) => {
   res.json({ message: 'Hello World!' })
 })
@@ -37,9 +37,20 @@ app.get('/api/admin/check', requireAdmin, (req, res) => {
   })
 })
 
+app.get('/api/admin/logs/:userId', requireAdmin, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const logs = await getLogsByUserId(userId);
+    res.json(logs);
+  } catch (error) {
+    console.error(`Ошибка при получении логов для пользователя ${userId}:`, error);
+    res.json({ error: 'Ошибка на сервере при получении логов' });
+  }
+});
+
 async function startServer() {
   try {
-    
+    await initializeDatabase();
     app.listen(port, () => {
       console.log(`Сервер запущен порт? ${port}`)
     })

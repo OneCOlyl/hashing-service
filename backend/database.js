@@ -100,6 +100,23 @@ async function linkUserToLog(userId, logId) {
     }
 }
 
+async function getUsers(searchQuery = '') {
+    try {
+        const users = await sql`
+            SELECT id, name, email
+            FROM cls_users
+            WHERE name ILIKE ${'%' + searchQuery + '%'}
+               OR email ILIKE ${'%' + searchQuery + '%'}
+            ORDER BY name
+            LIMIT 20
+        `;
+        return users;
+    } catch (error) {
+        console.error('Ошибка при поиске пользователей:', error);
+        throw error;
+    }
+}
+
 module.exports = {
   sql,
   initializeDatabase,
@@ -107,4 +124,5 @@ module.exports = {
   findOrCreateUser,
   addLog,
   linkUserToLog,
+  getUsers,
 }; 

@@ -8,6 +8,7 @@ export default withAuth(
     if (isAdminRoute && token?.["role"] !== "admin") {
       return NextResponse.redirect(new URL("/api/auth/signin", req.url))
     }
+    return NextResponse.next()
   },
   {
     callbacks: {

@@ -1,7 +1,9 @@
 const postgres = require('postgres');
 
-const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB } = process.env;
-const connectionString = `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}`;
+const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST, POSTGRES_PORT } = process.env;
+const dbHost = POSTGRES_HOST || 'db';
+const dbPort = POSTGRES_PORT || '5432';
+const connectionString = `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${dbHost}:${dbPort}/${POSTGRES_DB}`;
 
 const sql = postgres(connectionString, {
     onnotice: process.env.NODE_ENV === 'development' ? console.log : () => {},

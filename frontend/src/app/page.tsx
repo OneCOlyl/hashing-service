@@ -1,10 +1,17 @@
-import LoginButton from './components/LoginButton'
+import {
+  Box,
+  Typography,
+} from '@mui/material'
+
 
 export default function Page() {
   return (
-    <div>
-      <h1>Hello, Next.js!</h1>
-      <LoginButton />
-    </div>
+    <Box sx={{
+      minHeight: 'calc(100vh - 64px)', py: 4
+    }}>
+      <Typography>
+        Service
+      </Typography>
+    </Box>
   )
 }

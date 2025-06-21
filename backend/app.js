@@ -1,11 +1,52 @@
+require('dotenv').config()
 const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3001
+
+
+app.use(helmet())
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}))
+app.use(express.json())
+
+const requireAdmin = (req, res, next) => {
+  const adminEmail = process.env.ADMIN_EMAIL
+  const userEmail = req.headers['x-user-email']
+  
+  if (!adminEmail || !userEmail || userEmail !== adminEmail) {
+    return res.json({ error: 'Доступ запрещён' })
+  }
+  
+  next()
+}
+
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.json({ message: 'Hello World!' })
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+app.get('/api/admin/check', requireAdmin, (req, res) => {
+  res.json({
+    isAdmin: true,
+    email: process.env.ADMIN_EMAIL,
+  })
 })
+
+async function startServer() {
+  try {
+    
+    app.listen(port, () => {
+      console.log(`Сервер запущен порт? ${port}`)
+    })
+  } catch (error) {
+    console.error('Ошибка запуска сервера:', error)
+    process.exit(1)
+  }
+}
+
+startServer()

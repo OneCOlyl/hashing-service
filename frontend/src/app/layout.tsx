@@ -1,9 +1,8 @@
-import { CssBaseline, InitColorSchemeScript, ThemeProvider } from '@mui/material';
+import { InitColorSchemeScript } from '@mui/material';
 import React from 'react';
-import theme from '../theme';
-import ModeSwitch from "./components/ModeSwitch";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Providers from './components/Providers';
+import AppToolbar from './components/AppTollbar';
 
 export default function RootLayout(props: { children: React.ReactNode })
 {
@@ -12,13 +11,10 @@ export default function RootLayout(props: { children: React.ReactNode })
     <body>
     <InitColorSchemeScript attribute="class"/>
     <AppRouterCacheProvider options={{enableCssLayer: true}}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline/>
-        <Providers>
-          <ModeSwitch/>
-          {props.children}
-        </Providers>
-      </ThemeProvider>
+      <Providers>
+        <AppToolbar />
+        {props.children}
+      </Providers>
     </AppRouterCacheProvider>
     </body>
     </html>
